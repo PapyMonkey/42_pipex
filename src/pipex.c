@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/07 22:42:03 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/07 23:00:41 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_exec_access(t_list *lst, char **path)
 	int		i;
 	char	*path_join;
 
+	if (!lst)
+		return (NULL);
 	i = 0;
 	while (path[i] != NULL)
 	{
@@ -81,17 +83,15 @@ int	ft_pip_nb_args(t_list *lst)
 
 	lst_tmp = lst;
 	len = 0;
-	ft_printf("TEST NB\n");
-	while (lst_tmp != NULL
-		|| ft_memcmp(lst_tmp->content, "|", 1) != 0
-		|| ft_memcmp(lst_tmp->content, "<", 1) != 0
-		|| ft_memcmp(lst_tmp->content, ">", 1) != 0)
+	ft_printf("TEST NB - IN\n");
+	while (lst_tmp != NULL)
 	{
-		ft_printf("TEST NB IN\n");
-		ft_printf("Content : %s\t\tNext : %s\n", lst_tmp->content, lst_tmp->next);
+		ft_printf("TEST NB - LOOP\n");
+		ft_printf("\tContent : %s\t\tNext : %s\n", lst_tmp->content, lst_tmp->next);
 		lst_tmp = lst_tmp->next;
 		len++;
 	}
+	ft_printf("TEST NB - OUT\n");
 	return (len);
 }
 
@@ -122,8 +122,9 @@ char	**ft_pip_lst_args(t_list **lst, int len)
 	t_list	*lst_tmp;
 	char	**out;
 
-	ft_printf("TEST 1\n");
+	ft_printf("TEST PIP_LST - IN\n");
 	lst_tmp = *lst;
+	ft_printf("len = %d\n", len);
 	if (len == 0)
 		return (malloc(0));
 	out = malloc(sizeof(char *) * len + 1);
@@ -131,9 +132,12 @@ char	**ft_pip_lst_args(t_list **lst, int len)
 	i = 0;
 	while (i < len)
 	{
-		out[i] = ft_strdup(lst_tmp->content);
+		out[i] = ft_strdup((*lst)->content);
 		ft_lstdelandlink(lst, ft_lstdelcustom);
+		ft_printf("TEST PIP_LST - LOOP\n");
+		i++;
 	}
+	ft_printf("TEST PIP_LST - OUT\n");
 	return (out);
 }
 
@@ -162,6 +166,7 @@ int	main(int argc, char **argv, char **envp)
 	(void) argc;
 	path = ft_split_path(envp[4]);
 	lst_argv = ft_lst_args(argv);
+	ft_printf("TEST MAIN\n");
 	ft_pip_command(lst_argv, path);
 	args = ft_pip_lst_args(&lst_argv, ft_pip_nb_args(lst_argv));
 	//test(ft_lst_args(argv));
