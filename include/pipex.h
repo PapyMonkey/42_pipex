@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:53:00 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/08 12:15:23 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/08 13:12:19 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,6 @@
 # include <fcntl.h> 
 # include <errno.h> 
 
-#include "../libft/include/libft.h"
+# include "../libft/include/libft.h"
 
 #endif
