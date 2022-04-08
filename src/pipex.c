@@ -6,11 +6,10 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/05 13:06:35 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/08 12:15:32 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "pipex.h"
 
 char	*ft_exec_access(char *command, char **path)
@@ -18,6 +17,8 @@ char	*ft_exec_access(char *command, char **path)
 	int		i;
 	char	*path_join;
 
+	if (!command)
+		return (NULL);
 	i = 0;
 	while (path[i] != NULL)
 	{
@@ -42,6 +43,41 @@ char	**ft_split_path(char *path)
 	return (path_splitted);
 }
 
+int	ft_pip_infile(int *i, char **argv)
+{
+	int	fd_infile;
+
+	fd_infile = 0;
+	if (access(argv[*i], R_OK) == 0)
+	{
+		fd_infile = open(argv[*i], O_RDONLY);
+		if (fd_infile == -1)
+		{
+			ft_printf("Error: %s\n", strerror(errno));
+			return (EXIT_FAILURE);
+		}
+		// INSERT HERE PIPE AND READ STUFF
+	}
+	else
+	{
+		ft_printf("Error: %s\n", strerror(errno));
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
+void	ft_pip_do(int i, char **argv)
+{
+	if (!argv[i])
+	{
+		ft_printf("Error: No input\n");
+		return ;
+	}
+	if (i == 1)
+	{
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	**path;
@@ -53,10 +89,18 @@ int	main(int argc, char **argv, char **envp)
 	(void) **argv;
 	i = 1;
 	path = ft_split_path(envp[4]);
+
+
+	static int	n;
+
+	n = 1;
+	ft_pip_do(n, argv);
+
+
 	while (i != argc)
 	{
 		tmp_access = ft_exec_access(argv[i], path);
-		ft_printf("%s\n", tmp_access);
+		//ft_printf("%s\n", tmp_access);
 		i++;
 	}
 	if (tmp_access)
@@ -64,5 +108,5 @@ int	main(int argc, char **argv, char **envp)
 		if (fork() == 0)
 			execve(tmp_access, tmp_args, envp);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

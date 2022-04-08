@@ -6,13 +6,18 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:53:00 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/04 12:53:55 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/08 12:15:23 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include <unistd.h>
+# include <stdio.h>
+# include <string.h>
+# include <fcntl.h> 
+# include <errno.h> 
+
+#include "../libft/include/libft.h"
 
 #endif
