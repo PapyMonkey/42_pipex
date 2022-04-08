@@ -6,7 +6,7 @@
 #    By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/30 14:23:25 by aguiri            #+#    #+#              #
-#    Updated: 2022/04/08 14:23:16 by aguiri           ###   ########.fr        #
+#    Updated: 2022/04/08 14:30:29 by aguiri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,11 @@ SRCS_NAME			:=	pipex.c
 SRCS				:=	$(addprefix $(SRCS_PATH)/, $(SRCS_NAME))
 OBJS 				:=	$(addprefix $(OBJS_PATH)/, $(SRCS_NAME:.c=.o))
 
+# ********************************* H E A D S *********************************
+
+HFLAGS				:=	-I $(HDRS_PATH)\
+						-I $(LIBS_PATH)/$(HDRS_PATH)
+
 # ********************************** L I B S **********************************
 
 LFLAGS_NAME			:=	-lft
@@ -62,7 +67,7 @@ $(OBJS_PATH)/%.o: 	$(SRCS_PATH)/%.c $(HDRS_PATH)
 					@$(MKDIR) $(dir $@)
 					@$(ECHO)\
 					$(BLACK)$(DARK)$(ITALIC)"Compiling $<"$(EOC)
-					@$(CC) -o $@ -c $< -I $(HDRS_PATH) $(CFLAGS)
+					@$(CC) -o $@ -c $< $(HFLAGS) $(CFLAGS)
 
 
 $(NAME):			$(OBJS)
