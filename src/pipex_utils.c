@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 11:49:59 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/09 12:32:18 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/09 21:39:03 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,17 @@ void	ft_error_put_exit(void)
 {
 	ft_printf("Error: %s\n", strerror(errno));
 	exit(EXIT_FAILURE);
+}
+
+void	ft_pipex_redirect(int old_fd, int new_fd)
+{
+	if (old_fd != new_fd)
+	{
+		if (dup2(old_fd, new_fd) == -1)
+			ft_error_put_exit();
+		else
+			close(old_fd);
+	}
 }
 
 char	**ft_split_path(char **envp)
@@ -51,4 +62,45 @@ char	*ft_exec_access(char *command, char **path)
 		i++;
 	}
 	return (NULL);
+}
+
+void	ft_pipex_infile_read(int *fd, int fd_infile)
+{
+	char	*out;
+
+	out = ft_get_next_line(fd_infile);
+	if (out)
+	{
+		if (write(fd[WRITE_END], out, ft_strlen(out)) == -1)
+			ft_error_put_exit();
+		while (out)
+		{
+			out = ft_get_next_line(fd_infile);
+			if (write(fd[WRITE_END], out, ft_strlen(out)) == -1)
+				ft_error_put_exit();
+		}
+	}
+}
+
+void	ft_pipex_outfile_write(int *fd, int fd_outfile)
+{
+	char	*out;
+
+	out = ft_get_next_line(fd[READ_END]);
+	ft_printf("out : %s", out);
+	if (out)
+	{
+		if (write(fd_outfile, out, ft_strlen(out)) == -1)
+			ft_error_put_exit();
+		while (out)
+		{
+			out = ft_get_next_line(fd[READ_END]);
+			if (out == NULL)
+				ft_printf("END\n");
+			if (write(fd_outfile, out, ft_strlen(out)) == -1)
+				ft_error_put_exit();
+		}
+		exit(EXIT_SUCCESS);
+		ft_printf("TEST OUT\n");
+	}
 }
