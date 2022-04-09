@@ -6,107 +6,71 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/08 12:15:32 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/09 12:42:05 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*ft_exec_access(char *command, char **path)
+void	ft_pipex_exec(int i, int *fd, t_cmds cmds)
 {
-	int		i;
-	char	*path_join;
+	char	**cmd_splitted;
+	char	*try_access;
 
-	if (!command)
-		return (NULL);
-	i = 0;
-	while (path[i] != NULL)
+	(void) fd;
+	cmd_splitted = ft_split(cmds.args[i], ' ');
+	try_access = ft_exec_access(cmd_splitted[0], cmds.path);
+	// ft_printf("%s\n", try_access);
+	if (!try_access)
+		ft_error_put_exit();
+	if (try_access)
 	{
-		ft_strlcat(path[i], "/", ft_strlen(path[i]) + 2);
-		path_join = ft_strjoin(path[i], command);
-		if (access(path_join, X_OK) == 0)
-			return (path_join);
-		free(path_join);
-		i++;
+		execve(try_access, cmd_splitted, cmds.envp);
+		free(try_access);
 	}
-	return (NULL);
 }
 
-char	**ft_split_path(char *path)
+void	ft_pipex_core(int i, int *fd, t_cmds cmds)
 {
-	char	*path_trimmed;
-	char	**path_splitted;
+	pid_t	pid;
+	int		status;
 
-	path_trimmed = ft_strtrim(path, "PATH=");
-	path_splitted = ft_split(path_trimmed, ':');
-	free(path_trimmed);
-	return (path_splitted);
-}
-
-int	ft_pip_infile(int *i, char **argv)
-{
-	int	fd_infile;
-
-	fd_infile = 0;
-	if (access(argv[*i], R_OK) == 0)
+	(void) fd;
+	pid = fork();
+	if (pid < 0)
+		ft_error_put_exit();
+	if (pid == 0)
 	{
-		fd_infile = open(argv[*i], O_RDONLY);
-		if (fd_infile == -1)
-		{
-			ft_printf("Error: %s\n", strerror(errno));
-			return (EXIT_FAILURE);
-		}
-		// INSERT HERE PIPE AND READ STUFF
+		ft_pipex_exec(i, fd, cmds);
+		exit(EXIT_SUCCESS);
 	}
 	else
 	{
-		ft_printf("Error: %s\n", strerror(errno));
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
-}
-
-void	ft_pip_do(int i, char **argv)
-{
-	if (!argv[i])
-	{
-		ft_printf("Error: No input\n");
-		return ;
-	}
-	if (i == 1)
-	{
+		waitpid(pid, &status, 0);
+		ft_pipex_core(++i, fd, cmds);
 	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	**path;
-	char	*tmp_access;
+	int		*fd;
 	int		i;
-	char	*tmp_args[] = {argv[0], NULL};
+	t_cmds	cmds;
 
-	(void) argc;
-	(void) **argv;
+	if (argc <= 4)
+	{
+		ft_printf("Error: Invalid arguments\n");
+		return (EXIT_FAILURE);
+	}
 	i = 1;
-	path = ft_split_path(envp[4]);
-
-
-	static int	n;
-
-	n = 1;
-	ft_pip_do(n, argv);
-
-
-	while (i != argc)
-	{
-		tmp_access = ft_exec_access(argv[i], path);
-		//ft_printf("%s\n", tmp_access);
-		i++;
-	}
-	if (tmp_access)
-	{
-		if (fork() == 0)
-			execve(tmp_access, tmp_args, envp);
-	}
+	fd = malloc(sizeof(int) * 2 + 1);
+	fd[2] = '\0';
+	pipe(fd);
+	(void) fd;
+	cmds.args_nb = argc;
+	cmds.args = argv;
+	cmds.envp = envp;
+	cmds.path = ft_split_path(cmds.envp);
+	ft_pipex_core(i, fd, cmds);
 	return (EXIT_SUCCESS);
 }

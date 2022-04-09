@@ -6,7 +6,7 @@
 #    By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/30 14:23:25 by aguiri            #+#    #+#              #
-#    Updated: 2022/04/08 14:30:29 by aguiri           ###   ########.fr        #
+#    Updated: 2022/04/09 12:31:41 by aguiri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,8 @@ LIBS_PATH			:=	libft
 
 # ********************************* N A M E S *********************************
 
-SRCS_NAME			:=	pipex.c
+SRCS_NAME			:=	pipex_utils.c\
+						pipex.c
 SRCS				:=	$(addprefix $(SRCS_PATH)/, $(SRCS_NAME))
 OBJS 				:=	$(addprefix $(OBJS_PATH)/, $(SRCS_NAME:.c=.o))
 
@@ -71,7 +72,7 @@ $(OBJS_PATH)/%.o: 	$(SRCS_PATH)/%.c $(HDRS_PATH)
 
 
 $(NAME):			$(OBJS)
-					@$(CC) $< -o $@ $(LFLAGS)
+					@$(CC) $^ -o $@ $(LFLAGS)
 					@$(ECHO)\
 					$(CYAN)$(UNDERLINE)"$@"$(EOC)": "$(GREEN)"complete"$(EOC)
 
