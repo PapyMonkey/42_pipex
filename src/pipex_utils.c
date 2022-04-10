@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 11:49:59 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/10 15:45:47 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 17:24:28 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ void	ft_pipex_redirect(int old_fd, int new_fd)
 		if (dup2(old_fd, new_fd) == -1)
 			ft_error_put_exit();
 		else
-		{
-			ft_printf("REDIRECT : %d being closed and redirected to %d.\n", old_fd, new_fd);
 			close(old_fd);
-		}
 	}
 }
 
@@ -72,7 +69,7 @@ void	ft_pipex_infile_read(int *fd, int fd_infile)
 	char	*out;
 
 	out = ft_get_next_line(fd_infile);
-	ft_printf("out : %s", out);
+	//ft_printf("out : %s", out);
 	if (out)
 	{
 		if (write(fd[WRITE_END], out, ft_strlen(out)) == -1)
@@ -82,7 +79,7 @@ void	ft_pipex_infile_read(int *fd, int fd_infile)
 			out = ft_get_next_line(fd_infile);
 			if (out)
 			{
-				ft_printf("out : %s", out);
+				//ft_printf("out : %s", out);
 				if (write(fd[WRITE_END], out, ft_strlen(out)) == -1)
 					ft_error_put_exit();
 			}
@@ -97,10 +94,10 @@ void	ft_pipex_outfile_write(int *fd, int fd_outfile)
 	int		i;
 	char	*out;
 
-	ft_printf("TOTO 2\n");
+	//ft_printf("TOTO 2\n");
 	i = 0;
 	out = ft_get_next_line(fd[READ_END]);
-	ft_printf("out : %s", out);
+	//ft_printf("out : %s", out);
 	if (out)
 	{
 		if (write(fd_outfile, out, ft_strlen(out)) == -1)
@@ -108,7 +105,7 @@ void	ft_pipex_outfile_write(int *fd, int fd_outfile)
 		while (out)
 		{
 			//ft_printf("i avant = %d\n", i);
-			ft_printf("out : %s\n", out = ft_get_next_line(fd[READ_END]));
+			out = ft_get_next_line(fd[READ_END]);
 			if (out)
 			{
 				if (write(fd_outfile, out, ft_strlen(out)) == -1)
@@ -118,7 +115,7 @@ void	ft_pipex_outfile_write(int *fd, int fd_outfile)
 			//ft_printf("out : %s", out);
 			//ft_printf("i apres = %d\n", i);
 		}
-		ft_printf("TEST OUT\n");
+		//ft_printf("TEST OUT\n");
 		exit(EXIT_SUCCESS);
 	}
 }
