@@ -6,7 +6,7 @@
 #    By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/30 14:23:25 by aguiri            #+#    #+#              #
-#    Updated: 2022/04/09 12:31:41 by aguiri           ###   ########.fr        #
+#    Updated: 2022/04/10 12:38:54 by aguiri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,7 @@ $(OBJS_PATH)/%.o: 	$(SRCS_PATH)/%.c $(HDRS_PATH)
 					@$(MKDIR) $(dir $@)
 					@$(ECHO)\
 					$(BLACK)$(DARK)$(ITALIC)"Compiling $<"$(EOC)
-					@$(CC) -o $@ -c $< $(HFLAGS) $(CFLAGS)
+					@$(CC) -g -o $@ -c $< $(HFLAGS) $(CFLAGS)
 
 
 $(NAME):			$(OBJS)

@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 11:49:59 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/09 21:39:03 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 13:48:05 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,12 +95,14 @@ void	ft_pipex_outfile_write(int *fd, int fd_outfile)
 		while (out)
 		{
 			out = ft_get_next_line(fd[READ_END]);
-			if (out == NULL)
-				ft_printf("END\n");
 			if (write(fd_outfile, out, ft_strlen(out)) == -1)
 				ft_error_put_exit();
+			ft_printf("out : %s", out);
 		}
-		exit(EXIT_SUCCESS);
 		ft_printf("TEST OUT\n");
+		close(fd_outfile);
+		close(fd[READ_END]);
+		close(fd[WRITE_END]);
+		exit(EXIT_SUCCESS);
 	}
 }
