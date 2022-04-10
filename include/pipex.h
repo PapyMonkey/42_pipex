@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:53:00 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/09 17:54:18 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 22:50:41 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,36 @@ typedef struct s_cmds {
 	char	**args;
 	char	**path;
 	char	**envp;
+	char	*pwd;
 }			t_cmds;
 
 // ****************************************************************************
-// Functions - pipex_utils.c
+// Functions - pipex_io.c
 
 void	ft_error_put_exit(void);
-
-void	ft_pipex_redirect(int old_fd, int new_fd);
-
-char	**ft_split_path(char **envp);
-
-char	*ft_exec_access(char *command, char **path);
 
 void	ft_pipex_infile_read(int *fd, int fd_infile);
 
 void	ft_pipex_outfile_write(int *fd, int fd_outfile);
+
+// ****************************************************************************
+// Functions - pipex_path.c
+
+char	**ft_split_path(char **envp);
+
+char	*ft_get_pwd(char **envp);
+
+char	*ft_join_pwd_path(size_t i, t_cmds cmds);
+
+char	*ft_exec_access(char *command, char **path);
+
+// ****************************************************************************
+// Functions - pipex_utils.c
+
+t_cmds	ft_pipex_construct(int argc, char **argv, char **envp);
+
+void	ft_pipex_deconstruct(t_cmds cmds);
+
+void	ft_pipex_redirect(int old_fd, int new_fd);
 
 #endif
