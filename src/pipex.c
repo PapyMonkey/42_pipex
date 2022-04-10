@@ -6,43 +6,37 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/10 23:17:33 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 23:25:35 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	ft_pipex_infile(size_t i, int *fd, t_cmds cmds)
+static void	ft_pipex_in_out_file(size_t i, int *fd, t_cmds cmds, int OPEN_MODE)
 {
 	char	*path;
-	int		fd_infile;
+	int		fd_file;
 
 	path = ft_join_pwd_path(i, cmds);
-	fd_infile = open(path, O_RDONLY);
+	fd_file = open(path, OPEN_MODE);
 	free(path);
-	if (fd_infile == -1)
+	if (fd_file == -1)
 		ft_error_put_exit();
-	close(fd[READ_END]);
-	ft_pipex_infile_read(fd, fd_infile);
-	close(fd[WRITE_END]);
-	close(fd_infile);
-	exit(EXIT_SUCCESS);
-}
-
-static void	ft_pipex_outfile(size_t i, int *fd, t_cmds cmds)
-{
-	char	*path;
-	int		fd_outfile;
-
-	path = ft_join_pwd_path(i, cmds);
-	fd_outfile = open(path, O_WRONLY);
-	free(path);
-	if (fd_outfile == -1)
-		ft_error_put_exit();
-	close(fd[WRITE_END]);
-	ft_pipex_outfile_write(fd, fd_outfile);
-	close(fd[READ_END]);
-	close(fd_outfile);
+	if (OPEN_MODE == O_RDONLY)
+	{
+		close(fd[READ_END]);
+		ft_pipex_infile_read(fd, fd_file);
+		close(fd[WRITE_END]);
+	}
+	else if (OPEN_MODE == O_WRONLY)
+	{
+		close(fd[WRITE_END]);
+		ft_pipex_outfile_write(fd, fd_file);
+		close(fd[READ_END]);
+	}
+	else
+		exit(EXIT_FAILURE);
+	close(fd_file);
 	exit(EXIT_SUCCESS);
 }
 
@@ -76,9 +70,9 @@ static void	ft_pipex_routine(size_t i, int fd_old, int *fd, t_cmds cmds)
 	ft_pipex_redirect(fd_old, fd_child[READ_END]);
 	ft_pipex_redirect(fd[WRITE_END], fd_child[WRITE_END]);
 	if (i == 1)
-		ft_pipex_infile(i, fd_child, cmds);
+		ft_pipex_in_out_file(i, fd_child, cmds, O_RDONLY);
 	else if (i == cmds.args_nb - 1)
-		ft_pipex_outfile(i, fd_child, cmds);
+		ft_pipex_in_out_file(i, fd_child, cmds, O_WRONLY);
 	else if (i != 1 && i != cmds.args_nb - 1)
 		ft_pipex_exec(i, fd_child, cmds);
 }
