@@ -6,7 +6,7 @@
 #    By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/30 14:23:25 by aguiri            #+#    #+#              #
-#    Updated: 2022/04/10 22:51:23 by aguiri           ###   ########.fr        #
+#    Updated: 2022/04/10 23:02:01 by aguiri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,6 +62,11 @@ HFLAGS				:=	-I $(HDRS_PATH)\
 LFLAGS_NAME			:=	-lft
 LFLAGS				:=	-L./$(LIBS_PATH) $(LFLAGS_NAME)
 
+# ********************************* N O R M E *********************************
+
+NRM					:=	norminette
+NFLAGS				?=	-R CheckForbiddenSourceHeader
+
 # ********************************* R U L E S *********************************
 
 all:				$(NAME)
@@ -91,6 +96,11 @@ fclean:				clean
 
 re:					fclean all
 
+# ********************************* B O N U S *********************************
+
+norme:				$(NAME)
+					@$(NRM) $(NFLAGS) $(HDRS_PATH) $(SRCS_PATH)
+
 libft:				
 					@$(MAKE) -C ./$(LIBS_PATH)
 
@@ -103,4 +113,5 @@ libft_fclean:
 libft_re:		
 					@$(MAKE) -C ./$(LIBS_PATH) re
 
-.PHONY:				all clean fclean re libft libft_clean libft_fclean libft_re
+.PHONY:				all clean fclean re\
+					norme libft libft_clean libft_fclean libft_re

@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 11:49:59 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/10 22:51:01 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 23:02:47 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ t_cmds	ft_pipex_construct(int argc, char **argv, char **envp)
 
 void	ft_pipex_deconstruct(t_cmds cmds)
 {
-	//free(cmds->args);
-	//free(cmds->envp);
 	free(cmds.path);
 	free(cmds.pwd);
 }

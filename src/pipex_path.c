@@ -6,12 +6,11 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 22:48:51 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/10 22:49:34 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/10 22:53:44 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
 
 char	**ft_split_path(char **envp)
 {
