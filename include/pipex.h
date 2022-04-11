@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:53:00 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/11 07:14:12 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/11 17:40:19 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 # define WRITE_END 1
 # define READ_END 0
+# define HDOC "here_doc"
 
 // ****************************************************************************
 // Structures
@@ -63,6 +64,10 @@ void		ft_pipex_infile_read(int *fd, int fd_infile);
  * \param fd_infile	File's file descriptor.
  */
 void		ft_pipex_outfile_write(int *fd, int fd_outfile);
+
+void		ft_pipex_infile(size_t i, int *fd, t_cmds cmds);
+
+void		ft_pipex_outfile(size_t i, int *fd, t_cmds cmds);
 
 // ****************************************************************************
 // Functions - pipex_path.c

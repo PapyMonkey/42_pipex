@@ -6,37 +6,30 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/11 12:36:23 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/11 17:40:00 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	ft_pipex_in_out_file(size_t i, int *fd, t_cmds cmds, int OPEN_MODE)
+static void	ft_pipex_here_doc(size_t i, int *fd, t_cmds cmds)
 {
-	char	*path;
-	int		fd_file;
+	char	*limiter;
+	char	*out;
 
-	path = ft_join_pwd_path(i, cmds);
-	fd_file = open(path, OPEN_MODE | O_CREAT | O_TRUNC, 0777);
-	free(path);
-	if (fd_file == -1)
+	limiter = ft_strjoin(cmds.args[i + 1], "\n");
+	out = ft_get_next_line(STDIN_FILENO);
+	if (!out)
 		ft_error_put_exit();
-	if (OPEN_MODE == O_RDONLY)
+	while (ft_strncmp(out, limiter, ft_strlen(limiter)))
 	{
-		close(fd[READ_END]);
-		ft_pipex_infile_read(fd, fd_file);
-		close(fd[WRITE_END]);
+		if (write(fd[WRITE_END], out, ft_strlen(out)) == -1)
+			ft_error_put_exit();
+		out = ft_get_next_line(STDIN_FILENO);
 	}
-	else if (OPEN_MODE == O_WRONLY)
-	{
-		close(fd[WRITE_END]);
-		ft_pipex_outfile_write(fd, fd_file);
-		close(fd[READ_END]);
-	}
-	else
-		exit(EXIT_FAILURE);
-	close(fd_file);
+	free(limiter);
+	free(out);
+	close(fd[WRITE_END]);
 	exit(EXIT_SUCCESS);
 }
 
@@ -69,10 +62,13 @@ static void	ft_pipex_routine(size_t i, int fd_old, int *fd, t_cmds cmds)
 	close(fd[READ_END]);
 	ft_pipex_redirect(fd_old, fd_child[READ_END]);
 	ft_pipex_redirect(fd[WRITE_END], fd_child[WRITE_END]);
-	if (i == 1)
-		ft_pipex_in_out_file(i, fd_child, cmds, O_RDONLY);
+	ft_printf("i = %d\n", i);
+	if (i == 1 && ft_strncmp(cmds.args[i], HDOC, ft_strlen(HDOC)) != 0)
+		ft_pipex_infile(i, fd_child, cmds);
+	else if (i == 1 && ft_strncmp(cmds.args[i], HDOC, ft_strlen(HDOC)) == 0)
+		ft_pipex_here_doc(i, fd_child, cmds);
 	else if (i == cmds.args_nb - 1)
-		ft_pipex_in_out_file(i, fd_child, cmds, O_WRONLY);
+		ft_pipex_outfile(i, fd_child, cmds);
 	else if (i != 1 && i != cmds.args_nb - 1)
 		ft_pipex_exec(i, fd_child, cmds);
 }
@@ -97,7 +93,10 @@ static void	ft_pipex_core(size_t i, int fd_old, t_cmds cmds)
 			close(fd[WRITE_END]);
 			if (waitpid(pid, NULL, 0) == -1)
 				exit(EXIT_FAILURE);
-			ft_pipex_core(++i, fd[READ_END], cmds);
+			if (!ft_strncmp(cmds.args[i], HDOC, ft_strlen(HDOC)))
+				ft_pipex_core(i + 2, fd[READ_END], cmds);
+			else
+				ft_pipex_core(i + 1, fd[READ_END], cmds);
 		}
 	}
 }
