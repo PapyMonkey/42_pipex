@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/10 23:36:45 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/04/11 12:07:35 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	ft_pipex_in_out_file(size_t i, int *fd, t_cmds cmds, int OPEN_MODE)
 	int		fd_file;
 
 	path = ft_join_pwd_path(i, cmds);
-	fd_file = open(path, OPEN_MODE);
+	fd_file = open(path, OPEN_MODE | O_CREAT | O_TRUNC, 0777);
 	free(path);
 	if (fd_file == -1)
 		ft_error_put_exit();
@@ -95,7 +95,8 @@ static void	ft_pipex_core(size_t i, int fd_old, t_cmds cmds)
 		{
 			close(fd_old);
 			close(fd[WRITE_END]);
-			waitpid(pid, NULL, 0);
+			if (waitpid(pid, NULL, 0) == -1)
+				exit(EXIT_FAILURE);
 			ft_pipex_core(++i, fd[READ_END], cmds);
 		}
 	}
