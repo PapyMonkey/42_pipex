@@ -6,7 +6,7 @@
 #    By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/30 14:23:25 by aguiri            #+#    #+#              #
-#    Updated: 2022/04/11 17:40:53 by aguiri           ###   ########.fr        #
+#    Updated: 2022/05/31 16:02:04 by aguiri           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,10 @@ AR 					?=	ar
 RM					?=	rm -f
 MKDIR				?=	mkdir -p
 ECHO				?=	echo
+
+RWILDCARD			=	$(foreach d,\
+						$(wildcard $(1:=/*)),\
+						$(call RWILDCARD,$d,$2) $(filter $(subst *,%,$2),$d))
 
 # ********************************* F O N T S *********************************
 
@@ -41,26 +45,26 @@ WHITE				:=	"\033[37m"
 SRCS_PATH			:=	src
 OBJS_PATH			:=	bin
 HDRS_PATH			:=	include
-LIBS_PATH			:=	libft
+
+LIBFT_PATH			:=	libft
 
 # ********************************* N A M E S *********************************
 
-SRCS_NAME			:=	pipex_io.c\
-						pipex_path.c\
-						pipex_utils.c\
-						pipex.c
-SRCS				:=	$(addprefix $(SRCS_PATH)/, $(SRCS_NAME))
-OBJS 				:=	$(addprefix $(OBJS_PATH)/, $(SRCS_NAME:.c=.o))
+SRCS				:=	$(call RWILDCARD,$(SRCS_PATH),*.c)
+OBJS 				:=	$(addprefix $(OBJS_PATH)/, $(SRCS:$(SRCS_PATH)/%.c=%.o))
 
 # ********************************* H E A D S *********************************
 
 HFLAGS				:=	-I $(HDRS_PATH)\
-						-I $(LIBS_PATH)/$(HDRS_PATH)
+						-I $(LIBFT_PATH)/$(HDRS_PATH)
 
 # ********************************** L I B S **********************************
 
-LFLAGS_NAME			:=	-lft
-LFLAGS				:=	-L./$(LIBS_PATH) $(LFLAGS_NAME)
+# Libft
+FTFLAGS				:=	-L./$(LIBFT_PATH)\
+						-lft
+
+LFLAGS				:=	$(FTFLAGS)
 
 # ********************************* N O R M E *********************************
 
@@ -74,23 +78,23 @@ all:				$(NAME)
 $(OBJS_PATH)/%.o: 	$(SRCS_PATH)/%.c $(HDRS_PATH)
 					@$(MKDIR) $(dir $@)
 					@$(ECHO)\
-					$(BLACK)$(DARK)$(ITALIC)"Compiling $<"$(EOC)
-					@$(CC) -o $@ -c $< $(HFLAGS) $(CFLAGS)
+					$(WHITE)$(DARK)"Compiling $<"$(EOC)
+					@$(CC) $(HFLAGS) -o $@ -c $< 
 
 
 $(NAME):			$(OBJS)
-					@$(CC) $^ -o $@ $(LFLAGS)
+					@$(CC) $(LFLAGS) $^ -o $@ 
 					@$(ECHO)\
 					$(CYAN)$(UNDERLINE)"$@"$(EOC)": "$(GREEN)"complete"$(EOC)
 
 clean:
 					@$(ECHO)\
-					$(RED)$(ITALIC)"Deleting binary files"$(EOC)
+					$(RED)"Deleting binary files"$(EOC)
 					@$(RM) $(OBJS)
 
 fclean:				clean
 					@$(ECHO)\
-					$(RED)$(ITALIC)"Deleting executable file"$(EOC)
+					$(RED)"Deleting executable file"$(EOC)
 					@$(RM) -r $(OBJS_PATH)
 					@$(RM) $(NAME)
 
@@ -101,17 +105,20 @@ re:					fclean all
 norme:				$(NAME)
 					@$(NRM) $(NFLAGS) $(HDRS_PATH) $(SRCS_PATH)
 
+lib:				libft
+
 libft:				
-					@$(MAKE) -C ./$(LIBS_PATH)
+					@$(MAKE) -C ./$(LIBFT_PATH)
 
 libft_clean:
-					@$(MAKE) -C ./$(LIBS_PATH) clean
+					@$(MAKE) -C ./$(LIBFT_PATH) clean
 
 libft_fclean:		
-					@$(MAKE) -C ./$(LIBS_PATH) fclean
+					@$(MAKE) -C ./$(LIBFT_PATH) fclean
 
 libft_re:		
-					@$(MAKE) -C ./$(LIBS_PATH) re
+					@$(MAKE) -C ./$(LIBFT_PATH) re
 
 .PHONY:				all clean fclean re\
-					norme libft libft_clean libft_fclean libft_re
+					norme lib\
+					libft libft_clean libft_fclean libft_re
