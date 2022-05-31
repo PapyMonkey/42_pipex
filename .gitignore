@@ -51,8 +51,14 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Custom rules
+# Clang
+.cache/
+compile_commands.json 
+
+# Vim files
 .*.swp
+
+# Custom rules
 .DS_Store
 rsc/
 pipex
