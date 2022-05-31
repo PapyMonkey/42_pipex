@@ -6,7 +6,7 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 12:54:24 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/11 17:40:00 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/05/31 16:50:49 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ static void	ft_pipex_exec(const size_t i, int *fd, const t_cmds cmds)
 	char	**cmd_splitted;
 	char	*try_access;
 
-	ft_pipex_redirect(fd[READ_END], STDIN_FILENO);
-	ft_pipex_redirect(fd[WRITE_END], STDOUT_FILENO);
 	cmd_splitted = ft_split(cmds.args[i], ' ');
 	try_access = ft_exec_access(cmd_splitted[0], cmds.path);
 	if (!try_access)
-		ft_error_put_exit();
+		ft_error_put_exit_command_not_found(cmd_splitted[0]);
 	if (try_access)
 	{
+		ft_pipex_redirect(fd[READ_END], STDIN_FILENO);
+		ft_pipex_redirect(fd[WRITE_END], STDOUT_FILENO);
 		execve(try_access, cmd_splitted, cmds.envp);
 		free(try_access);
 		exit(EXIT_SUCCESS);
@@ -62,7 +62,6 @@ static void	ft_pipex_routine(size_t i, int fd_old, int *fd, t_cmds cmds)
 	close(fd[READ_END]);
 	ft_pipex_redirect(fd_old, fd_child[READ_END]);
 	ft_pipex_redirect(fd[WRITE_END], fd_child[WRITE_END]);
-	ft_printf("i = %d\n", i);
 	if (i == 1 && ft_strncmp(cmds.args[i], HDOC, ft_strlen(HDOC)) != 0)
 		ft_pipex_infile(i, fd_child, cmds);
 	else if (i == 1 && ft_strncmp(cmds.args[i], HDOC, ft_strlen(HDOC)) == 0)
