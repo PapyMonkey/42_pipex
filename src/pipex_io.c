@@ -6,17 +6,11 @@
 /*   By: aguiri <aguiri@student.42nice.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 21:19:54 by aguiri            #+#    #+#             */
-/*   Updated: 2022/04/11 17:20:23 by aguiri           ###   ########.fr       */
+/*   Updated: 2022/05/31 16:32:15 by aguiri           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	ft_error_put_exit(void)
-{
-	ft_printf("Error: %s\n", strerror(errno));
-	exit(EXIT_FAILURE);
-}
 
 void	ft_pipex_infile_read(int *fd, int fd_infile)
 {
