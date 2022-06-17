@@ -12,4 +12,4 @@
 | **Libft authorized** | `n/a` |
 | **Description** | `Your objective is to code the Pipex program.` |
 
-![Pipex grade](https://badge42.herokuapp.com/api/project/aguiri/pipex)
+![aguiri's 42 pipex Score](https://badge42.vercel.app/api/v2/cl1m1z528009409l5bo2ovzih/project/2616039)
